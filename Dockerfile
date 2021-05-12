@@ -29,7 +29,7 @@ RUN cd /home/djgpp/src && \
     mkdir binutils-build && \
     cd binutils-build && \
     ../binutils-$BINUTILS_VERSION/configure \
-        --prefix=$INSTALL_PREFIX --target=$TARGET --program-prefix=$TARGET \
+        --prefix=$INSTALL_PREFIX --target=$TARGET \
         --disable-nls --disable-werror && \
     make -j4
 
@@ -64,7 +64,7 @@ RUN cd /home/djgpp/src && \
     mkdir gcc-build && \
     cd gcc-build && \
     ../gcc-$GCC_VERSION/configure \
-        --prefix=$INSTALL_PREFIX --target=$TARGET --program-prefix=$TARGET \
+        --prefix=$INSTALL_PREFIX --target=$TARGET \
         --disable-nls \
         --disable-plugin \
         --disable-gcov \
