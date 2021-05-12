@@ -67,12 +67,12 @@ RUN cd /home/djgpp/src && \
         --prefix=$INSTALL_PREFIX --target=$TARGET --program-prefix=$TARGET \
         --disable-nls \
         --disable-plugin \
-        --disable-libgcov \
+        --disable-gcov \
         --enable-libstdcxx-filesystem-ts \
         --enable-libquadmath-support \
         --enable-version-specific-runtime-libs \
         --enable-languages=c && \
-    make -j4
+    make -j8
 
 USER root
 
