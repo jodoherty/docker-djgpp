@@ -23,6 +23,25 @@ USER djgpp
 
 RUN mkdir -p /home/djgpp/src
 
+COPY djcrx205.zip /home/djgpp/src/
+
+USER root
+
+RUN mkdir -p $INSTALL_PREFIX/$TARGET && \
+    cd $INSTALL_PREFIX/$TARGET && \
+    mkdir -p djcrx && \
+    cd djcrx && \
+    unzip -a /home/djgpp/src/djcrx205.zip && \
+    cd $INSTALL_PREFIX/$TARGET && \
+    mkdir -p bin lib && \
+    gcc -O ./djcrx/src/utils/bin2h.c -o bin/bin2h && \
+    gcc -O ./djcrx/src/stub/stubify.c -o bin/stubify && \
+    gcc -O ./djcrx/src/stub/stubedit.c -o bin/stubedit && \
+    ln -s $INSTALL_PREFIX/$TARGET/djcrx/include include && \
+    ln -s $INSTALL_PREFIX/$TARGET/djcrx/lib/* lib
+
+USER djgpp
+
 ADD binutils-$BINUTILS_VERSION.tar.gz /home/djgpp/src/
 
 RUN cd /home/djgpp/src && \
@@ -36,23 +55,6 @@ RUN cd /home/djgpp/src && \
 USER root
 
 RUN cd /home/djgpp/src/binutils-build && make install
-
-USER djgpp
-
-COPY djcrx205.zip /home/djgpp/src/
-
-USER root
-
-RUN cd $INSTALL_PREFIX/$TARGET && \
-    mkdir -p djcrx && \
-    cd djcrx && \
-    unzip -a /home/djgpp/src/djcrx205.zip && \
-    cd $INSTALL_PREFIX/$TARGET && \
-    gcc -O ./djcrx/src/utils/bin2h.c -o bin/bin2h && \
-    gcc -O ./djcrx/src/stub/stubify.c -o bin/stubify && \
-    gcc -O ./djcrx/src/stub/stubedit.c -o bin/stubedit && \
-    cp -rp ./djcrx/include sys-include && \
-    cp -rp ./djcrx/lib lib
 
 USER djgpp
 
@@ -76,7 +78,9 @@ RUN cd /home/djgpp/src && \
 
 USER root
 
-RUN cd /home/djgpp/src/gcc-build && make install
+RUN cd /home/djgpp/src/gcc-build && make install && \
+    ln -s $INSTALL_PREFIX/$TARGET/djcrx/lib/specs \
+          $INSTALL_PREFIX/lib/gcc/$TARGET/$GCC_VERSION/specs
 
 USER djgpp
 
