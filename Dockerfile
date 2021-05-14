@@ -69,17 +69,19 @@ USER djgpp
 
 ADD gcc-$GCC_VERSION.tar.gz /home/djgpp/src/
 
-# Currently I'm building this without libstdc++ because it fails
-# with an error.
+COPY gcc-libstdcxx.diff /home/djgpp/src
+
 RUN cd /home/djgpp/src && \
-    mkdir gcc-build && \
+    cd gcc-$GCC_VERSION && patch -p1 -i ../gcc-libstdcxx.diff && \
+    cd /home/djgpp/src && mkdir gcc-build && \
     cd gcc-build && \
     ../gcc-$GCC_VERSION/configure \
         --prefix=$INSTALL_PREFIX --target=$TARGET \
         --disable-nls \
         --disable-plugin \
+        --disable-threads \
         --disable-gcov \
-        --disable-libstdcxx \
+        --disable-libstdcxx-filesystem-ts \
         --enable-libquadmath-support \
         --enable-version-specific-runtime-libs \
         --enable-languages=c,c++ && \

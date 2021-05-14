@@ -1,0 +1,97 @@
+diff --git a/libstdc++-v3/src/c++11/shared_ptr.cc b/libstdc++-v3/src/c++11/shared_ptr.cc
+index 4678fbeff..1f0780f0d 100644
+--- a/libstdc++-v3/src/c++11/shared_ptr.cc
++++ b/libstdc++-v3/src/c++11/shared_ptr.cc
+@@ -34,9 +34,7 @@ namespace __gnu_internal _GLIBCXX_VISIBILITY(hidden)
+   __gnu_cxx::__mutex&
+   get_mutex(unsigned char i)
+   {
+-    // increase alignment to put each lock on a separate cache line
+-    struct alignas(64) M : __gnu_cxx::__mutex { };
+-    static M m[mask + 1];
++    struct __gnu_cxx::__mutex m[mask + 1];
+     return m[i];
+   }
+ }
+diff --git a/libstdc++-v3/src/c++17/Makefile.am b/libstdc++-v3/src/c++17/Makefile.am
+index cb94aff5f..86953e9dc 100644
+--- a/libstdc++-v3/src/c++17/Makefile.am
++++ b/libstdc++-v3/src/c++17/Makefile.am
+@@ -29,13 +29,8 @@ headers =
+ 
+ if ENABLE_DUAL_ABI
+ extra_string_inst_sources = cow-string-inst.cc
+-extra_fs_sources = \
+-	cow-fs_dir.cc \
+-	cow-fs_ops.cc \
+-	cow-fs_path.cc
+ else
+ extra_string_inst_sources =
+-extra_fs_sources =
+ endif
+ 
+ if ENABLE_EXTERN_TEMPLATE
+@@ -52,11 +47,7 @@ endif
+ sources = \
+ 	floating_from_chars.cc \
+ 	floating_to_chars.cc \
+-	fs_dir.cc \
+-	fs_ops.cc \
+-	fs_path.cc \
+-	memory_resource.cc \
+-	$(extra_fs_sources)
++	memory_resource.cc
+ 
+ vpath % $(top_srcdir)/src/c++17
+ 
+diff --git a/libstdc++-v3/src/c++17/Makefile.in b/libstdc++-v3/src/c++17/Makefile.in
+index 63984ecd5..17b1b24a4 100644
+--- a/libstdc++-v3/src/c++17/Makefile.in
++++ b/libstdc++-v3/src/c++17/Makefile.in
+@@ -122,14 +122,12 @@ CONFIG_CLEAN_FILES =
+ CONFIG_CLEAN_VPATH_FILES =
+ LTLIBRARIES = $(noinst_LTLIBRARIES)
+ libc__17convenience_la_LIBADD =
+-@ENABLE_DUAL_ABI_TRUE@am__objects_1 = cow-fs_dir.lo cow-fs_ops.lo \
+-@ENABLE_DUAL_ABI_TRUE@	cow-fs_path.lo
+-am__objects_2 = floating_from_chars.lo floating_to_chars.lo fs_dir.lo \
+-	fs_ops.lo fs_path.lo memory_resource.lo $(am__objects_1)
+-@ENABLE_DUAL_ABI_TRUE@am__objects_3 = cow-string-inst.lo
+-@ENABLE_EXTERN_TEMPLATE_TRUE@am__objects_4 = ostream-inst.lo \
+-@ENABLE_EXTERN_TEMPLATE_TRUE@	string-inst.lo $(am__objects_3)
+-am_libc__17convenience_la_OBJECTS = $(am__objects_2) $(am__objects_4)
++am__objects_1 = floating_from_chars.lo floating_to_chars.lo \
++	memory_resource.lo
++@ENABLE_DUAL_ABI_TRUE@am__objects_2 = cow-string-inst.lo
++@ENABLE_EXTERN_TEMPLATE_TRUE@am__objects_3 = ostream-inst.lo \
++@ENABLE_EXTERN_TEMPLATE_TRUE@	string-inst.lo $(am__objects_2)
++am_libc__17convenience_la_OBJECTS = $(am__objects_1) $(am__objects_3)
+ libc__17convenience_la_OBJECTS = $(am_libc__17convenience_la_OBJECTS)
+ AM_V_lt = $(am__v_lt_@AM_V@)
+ am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
+@@ -423,12 +421,6 @@ noinst_LTLIBRARIES = libc++17convenience.la
+ headers = 
+ @ENABLE_DUAL_ABI_FALSE@extra_string_inst_sources = 
+ @ENABLE_DUAL_ABI_TRUE@extra_string_inst_sources = cow-string-inst.cc
+-@ENABLE_DUAL_ABI_FALSE@extra_fs_sources = 
+-@ENABLE_DUAL_ABI_TRUE@extra_fs_sources = \
+-@ENABLE_DUAL_ABI_TRUE@	cow-fs_dir.cc \
+-@ENABLE_DUAL_ABI_TRUE@	cow-fs_ops.cc \
+-@ENABLE_DUAL_ABI_TRUE@	cow-fs_path.cc
+-
+ # XTEMPLATE_FLAGS =
+ @ENABLE_EXTERN_TEMPLATE_FALSE@inst_sources = 
+ 
+@@ -441,11 +433,7 @@ headers =
+ sources = \
+ 	floating_from_chars.cc \
+ 	floating_to_chars.cc \
+-	fs_dir.cc \
+-	fs_ops.cc \
+-	fs_path.cc \
+-	memory_resource.cc \
+-	$(extra_fs_sources)
++	memory_resource.cc
+ 
+ libc__17convenience_la_SOURCES = $(sources)  $(inst_sources)
+ 
